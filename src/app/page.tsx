@@ -2,11 +2,8 @@ import Navbar from "@/components/layout/Navbar";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[#0a0a0a]">
+    <main className="min-h-screen relative overflow-hidden bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-blue-100 via-white to-white">
       <Navbar />
-      <div className="flex items-center justify-center min-h-screen">
-        <h1 className="text-white text-4xl font-bold">NeoBank Course</h1>
-      </div>
     </main>
   );
 }
