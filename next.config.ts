@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/signup",
+        permanent: false, // Set to false so it handles dynamic auth routing properly
+      },
+    ];
+  },
 };
 
 export default nextConfig;
