@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Tell Tailwind v4 exactly where to scan for your components */
+@source "../components/**/*.tsx";
+@source "../app/**/*.tsx";
+
 html {
   scroll-behavior: smooth;
 }

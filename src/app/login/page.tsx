@@ -11,7 +11,6 @@ export default function SignInPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault(); // Stops the page from reloading
     setIsLoading(true); // Start the loading spinner
-
     // Simulate a backend delay, then route to the main home page
     setTimeout(() => {
       setIsLoading(false);
@@ -32,33 +31,33 @@ export default function SignInPage() {
     resize();
     window.addEventListener("resize", resize);
 
-    // Flowing wave lines like the reference image but dark
+    // Flowing wave lines — soft blue, tuned for a light background
     const waves = Array.from({ length: 8 }, (_, i) => ({
       offset: (i / 8) * Math.PI * 2,
       speed: 0.003 + i * 0.0005,
       amplitude: 80 + i * 30,
       yBase: 0.2 + i * 0.1,
       hue: 210 + i * 8,
-      alpha: 0.06 + (i % 3) * 0.04,
+      alpha: 0.08 + (i % 3) * 0.05,
       width: 1.5 + (i % 3) * 0.5,
     }));
 
-    // Floating particles/stars
+    // Floating particles
     const stars = Array.from({ length: 80 }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
       r: Math.random() * 1.5 + 0.2,
-      alpha: Math.random() * 0.6 + 0.1,
+      alpha: Math.random() * 0.5 + 0.15,
       twinkle: Math.random() * Math.PI * 2,
       twinkleSpeed: 0.01 + Math.random() * 0.02,
     }));
 
-    // 4-pointed star sparkles (like the image)
+    // 4-pointed star sparkles
     const sparkles = Array.from({ length: 6 }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
       size: 6 + Math.random() * 10,
-      alpha: Math.random() * 0.4 + 0.1,
+      alpha: Math.random() * 0.35 + 0.15,
       rot: Math.random() * Math.PI,
       rotSpeed: 0.002 + Math.random() * 0.003,
     }));
@@ -66,12 +65,18 @@ export default function SignInPage() {
     let t = 0;
     let animId: number;
 
-    const drawSparkle = (x: number, y: number, size: number, alpha: number, rot: number) => {
+    const drawSparkle = (
+      x: number,
+      y: number,
+      size: number,
+      alpha: number,
+      rot: number,
+    ) => {
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(rot);
       ctx.globalAlpha = alpha;
-      ctx.fillStyle = "#93c5fd";
+      ctx.fillStyle = "#3b82f6";
       ctx.beginPath();
       // 4-pointed star
       for (let i = 0; i < 4; i++) {
@@ -92,11 +97,10 @@ export default function SignInPage() {
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       const cx = canvas.width / 2;
       const cy = canvas.height / 2;
 
-      // Deep dark base radial — bright center glow like the image but dark
+      // Base light-blue wash
       const baseGlow = ctx.createRadialGradient(
         cx,
         cy,
@@ -105,9 +109,9 @@ export default function SignInPage() {
         cy,
         canvas.width * 0.7,
       );
-      baseGlow.addColorStop(0, "rgba(37,99,235,0.18)");
-      baseGlow.addColorStop(0.4, "rgba(29,78,216,0.10)");
-      baseGlow.addColorStop(1, "rgba(0,0,0,0)");
+      baseGlow.addColorStop(0, "rgba(191,219,254,0.55)");
+      baseGlow.addColorStop(0.4, "rgba(219,234,254,0.35)");
+      baseGlow.addColorStop(1, "rgba(239,246,255,0)");
       ctx.fillStyle = baseGlow;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -120,8 +124,8 @@ export default function SignInPage() {
         canvas.height * 0.15,
         canvas.width * 0.4,
       );
-      g2.addColorStop(0, "rgba(99,102,241,0.10)");
-      g2.addColorStop(1, "rgba(0,0,0,0)");
+      g2.addColorStop(0, "rgba(147,197,253,0.40)");
+      g2.addColorStop(1, "rgba(239,246,255,0)");
       ctx.fillStyle = g2;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -134,8 +138,8 @@ export default function SignInPage() {
         canvas.height * 0.85,
         canvas.width * 0.45,
       );
-      g3.addColorStop(0, "rgba(37,99,235,0.12)");
-      g3.addColorStop(1, "rgba(0,0,0,0)");
+      g3.addColorStop(0, "rgba(96,165,250,0.30)");
+      g3.addColorStop(1, "rgba(239,246,255,0)");
       ctx.fillStyle = g3;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -157,13 +161,13 @@ export default function SignInPage() {
           else ctx.lineTo(x, y);
         }
         const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-        gradient.addColorStop(0, `hsla(${wave.hue},80%,65%,0)`);
-        gradient.addColorStop(0.3, `hsla(${wave.hue},80%,65%,${wave.alpha})`);
+        gradient.addColorStop(0, `hsla(${wave.hue},85%,55%,0)`);
+        gradient.addColorStop(0.3, `hsla(${wave.hue},85%,55%,${wave.alpha})`);
         gradient.addColorStop(
           0.7,
-          `hsla(${wave.hue + 20},85%,70%,${wave.alpha * 1.2})`,
+          `hsla(${wave.hue + 20},85%,60%,${wave.alpha * 1.2})`,
         );
-        gradient.addColorStop(1, `hsla(${wave.hue},80%,65%,0)`);
+        gradient.addColorStop(1, `hsla(${wave.hue},85%,55%,0)`);
         ctx.strokeStyle = gradient;
         ctx.stroke();
       });
@@ -174,7 +178,7 @@ export default function SignInPage() {
         const a = s.alpha * (0.6 + 0.4 * Math.sin(s.twinkle));
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(148,197,251,${a})`;
+        ctx.fillStyle = `rgba(59,130,246,${a})`;
         ctx.fill();
       });
 
@@ -202,76 +206,72 @@ export default function SignInPage() {
   }, []);
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#03061a] p-4 font-sans">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#eff6ff] p-4 font-sans">
       {/* Animated canvas */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full pointer-events-none z-0"
       />
 
-      {/* Card — white with a very subtle dark tint so it reads against the dark bg */}
-      <div className="relative z-10 w-full max-w-[420px]">
+      {/* Card — premium, wider on desktop */}
+      <div className="relative z-10 w-full max-w-[420px] md:max-w-[560px]">
         {/* Outer glow ring around card */}
-        <div className="absolute -inset-[1px] rounded-[34px] bg-gradient-to-b from-blue-500/30 via-blue-600/10 to-transparent pointer-events-none" />
+        <div className="absolute -inset-[1px] rounded-[34px] bg-gradient-to-b from-blue-400/40 via-blue-300/15 to-transparent pointer-events-none" />
 
-        <div className="relative rounded-[32px] bg-white/[0.97] shadow-[0_32px_80px_-8px_rgba(0,0,30,0.7),0_0_0_1px_rgba(255,255,255,0.15)] backdrop-blur-xl px-10 py-10">
+        <div className="relative rounded-[32px] bg-white/[0.97] shadow-[0_32px_80px_-8px_rgba(37,99,235,0.25),0_0_0_1px_rgba(255,255,255,0.6)] backdrop-blur-xl px-10 py-10 md:px-16 md:py-14">
           {/* Logo lockup */}
-          <div className="mb-7 flex flex-col items-center text-center">
-            {/* Icon + wordmark row */}
+          <div className="mb-7 md:mb-9 flex flex-col items-center text-center">
             <div className="mb-5 flex items-center gap-3">
-              {/* Blue rounded-square icon */}
-              <div className="flex h-[44px] w-[44px] items-center justify-center rounded-[12px] bg-gradient-to-br from-blue-500 to-blue-700 shadow-[0_0_24px_rgba(37,99,235,0.50)]">
-                <span className="text-[20px] font-black text-white leading-none">
+              <div className="flex h-[44px] w-[44px] md:h-[52px] md:w-[52px] items-center justify-center rounded-[12px] bg-gradient-to-br from-blue-500 to-blue-700 shadow-[0_0_24px_rgba(37,99,235,0.50)]">
+                <span className="text-[20px] md:text-[24px] font-black text-white leading-none">
                   N
                 </span>
               </div>
-              {/* Text stack */}
               <div className="flex flex-col items-start">
-                <span className="text-[22px] font-black tracking-[-0.5px] text-[#0b1120] leading-none">
+                <span className="text-[22px] md:text-[26px] font-black tracking-[-0.5px] text-[#0b1120] leading-none">
                   NeoBank{" "}
                   <span className="text-blue-600 font-semibold">/&gt;</span>
                 </span>
-                <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#94a3b8] mt-[3px]">
+                <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.18em] text-[#94a3b8] mt-[3px]">
                   Engineering Masterclass
                 </span>
               </div>
             </div>
-
-            <h1 className="text-[26px] font-black tracking-[-0.6px] text-[#0b1120] mb-1">
+            <h1 className="text-[26px] md:text-[32px] font-black tracking-[-0.6px] text-[#0b1120] mb-1">
               Welcome Back
             </h1>
-            <p className="text-[14px] text-[#64748b] font-medium">
+            <p className="text-[14px] md:text-[15px] text-[#64748b] font-medium">
               Sign in to your NeoBank account
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="flex flex-col gap-5">
+          <form onSubmit={handleLogin} className="flex flex-col gap-5 md:gap-6">
             {/* Email / Phone */}
             <div>
-              <label className="mb-2 block text-[13px] font-bold text-[#1e293b]">
+              <label className="mb-2 block text-[13px] md:text-[14px] font-bold text-[#1e293b]">
                 Email or Phone Number
               </label>
               <input
                 type="text"
                 placeholder="Email or Phone Number"
-                className="w-full rounded-[12px] border-[1.5px] border-[#e2e8f0] bg-white px-4 py-[13px] text-[15px] text-[#0f172a] placeholder-[#94a3b8] outline-none transition-all duration-200 focus:border-blue-500 focus:shadow-[0_0_0_4px_rgba(37,99,235,0.10)]"
+                className="w-full rounded-[12px] border-[1.5px] border-[#e2e8f0] bg-white px-4 py-[13px] md:py-[15px] text-[15px] md:text-[16px] text-[#0f172a] placeholder-[#94a3b8] outline-none transition-all duration-200 focus:border-blue-500 focus:shadow-[0_0_0_4px_rgba(37,99,235,0.10)]"
               />
             </div>
 
             {/* Password */}
             <div>
-              <label className="mb-2 block text-[13px] font-bold text-[#1e293b]">
+              <label className="mb-2 block text-[13px] md:text-[14px] font-bold text-[#1e293b]">
                 Password
               </label>
               <input
                 type="password"
                 placeholder="Your Password"
-                className="w-full rounded-[12px] border-[1.5px] border-[#e2e8f0] bg-white px-4 py-[13px] text-[15px] text-[#0f172a] placeholder-[#94a3b8] outline-none transition-all duration-200 focus:border-blue-500 focus:shadow-[0_0_0_4px_rgba(37,99,235,0.10)]"
+                className="w-full rounded-[12px] border-[1.5px] border-[#e2e8f0] bg-white px-4 py-[13px] md:py-[15px] text-[15px] md:text-[16px] text-[#0f172a] placeholder-[#94a3b8] outline-none transition-all duration-200 focus:border-blue-500 focus:shadow-[0_0_0_4px_rgba(37,99,235,0.10)]"
               />
               <div className="mt-2 text-right">
                 <a
                   href="#"
-                  className="text-[13px] font-bold text-blue-600 hover:text-blue-700 transition-colors"
+                  className="text-[13px] md:text-[14px] font-bold text-blue-600 hover:text-blue-700 transition-colors"
                 >
                   Forgot?
                 </a>
@@ -289,7 +289,7 @@ export default function SignInPage() {
                 cursor: isLoading ? "not-allowed" : "pointer",
                 opacity: isLoading ? 0.7 : 1,
               }}
-              className="mt-1 w-full rounded-[12px] px-4 py-[14px] text-[15px] font-bold shadow-[0_6px_20px_rgba(37,99,235,0.40)] transition-all duration-200 hover:shadow-[0_8px_28px_rgba(37,99,235,0.55)] active:scale-[0.98] flex items-center justify-center h-[52px]"
+              className="mt-1 w-full rounded-[12px] px-4 py-[14px] md:py-[16px] text-[15px] md:text-[16px] font-bold shadow-[0_6px_20px_rgba(37,99,235,0.40)] transition-all duration-200 hover:shadow-[0_8px_28px_rgba(37,99,235,0.55)] active:scale-[0.98] flex items-center justify-center h-[52px] md:h-[56px]"
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -299,7 +299,7 @@ export default function SignInPage() {
             </button>
           </form>
 
-          <p className="mt-7 text-center text-[14px] text-[#64748b]">
+          <p className="mt-7 md:mt-9 text-center text-[14px] md:text-[15px] text-[#64748b]">
             Don&apos;t have an account?{" "}
             <Link
               href="/signup"
