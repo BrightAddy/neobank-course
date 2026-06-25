@@ -1,10 +1,18 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function SignUpPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const router = useRouter();
+
+  const handleSignup = (e: React.FormEvent) => {
+    e.preventDefault(); // Stops the page from reloading
+    // Backend logic will go here later. For now, route to login:
+    router.push("/login");
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -504,7 +512,7 @@ export default function SignUpPage() {
               Enter your details to secure your spot in the masterclass.
             </p>
 
-            <form onSubmit={(e) => e.preventDefault()}>
+            <form onSubmit={handleSignup} className="flex flex-col gap-5">
               <label className="mb-[8px] block text-[13px] font-bold text-[#1e293b]">
                 Full Name
               </label>

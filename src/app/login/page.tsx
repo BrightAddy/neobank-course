@@ -1,21 +1,29 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function SignInPage() {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setTimeout(() => setIsLoading(false), 1500);
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault(); // Stops the page from reloading
+    setIsLoading(true); // Start the loading spinner
+
+    // Simulate a backend delay, then route to the main home page
+    setTimeout(() => {
+      setIsLoading(false);
+      router.push("/dashboard");
+    }, 1500);
   };
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -56,9 +64,9 @@ export default function SignInPage() {
     }));
 
     let t = 0;
-    let animId;
+    let animId: number;
 
-    const drawSparkle = (x, y, size, alpha, rot) => {
+    const drawSparkle = (x: number, y: number, size: number, alpha: number, rot: number) => {
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(rot);
@@ -237,7 +245,7 @@ export default function SignInPage() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <form onSubmit={handleLogin} className="flex flex-col gap-5">
             {/* Email / Phone */}
             <div>
               <label className="mb-2 block text-[13px] font-bold text-[#1e293b]">
@@ -274,7 +282,6 @@ export default function SignInPage() {
             <button
               type="submit"
               disabled={isLoading}
-              onClick={handleSubmit}
               style={{
                 background: "linear-gradient(to right, #2563eb, #3b82f6)",
                 color: "#ffffff",

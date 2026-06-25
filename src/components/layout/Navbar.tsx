@@ -7,10 +7,10 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
-    { name: "Home", href: "/" },
+    { name: "Home", href: "/home" },
     { name: "Curriculum", href: "/curriculum", badge: "24 Modules" },
     { name: "Pricing", href: "/pricing" },
-    { name: "Registration", href: "/registration", status: "Live" },
+    { name: "Registration", href: "/registration", status: "live" },
   ];
 
   return (
@@ -23,7 +23,6 @@ export default function Navbar() {
       <nav className="bg-white/80 backdrop-blur-2xl border border-neutral-200/60 rounded-2xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] transition-all duration-500">
         <div className="px-6 lg:px-10">
           <div className="flex justify-between items-center h-20">
-            
             {/* 1. Brand Logo & Subtext */}
             <div className="flex-shrink-0 flex items-center">
               <Link href="/" className="flex items-center gap-3 group">
@@ -32,7 +31,8 @@ export default function Navbar() {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[22px] font-black text-neutral-900 tracking-tight leading-none">
-                    NeoBank <span className="text-blue-600 font-medium">/&gt;</span>
+                    NeoBank{" "}
+                    <span className="text-blue-600 font-medium">/&gt;</span>
                   </span>
                   {/* Added premium subtext */}
                   <span className="text-[10px] text-neutral-400 font-bold uppercase tracking-[0.2em] mt-1.5">
@@ -52,7 +52,7 @@ export default function Navbar() {
                   className="relative group px-5 py-2.5 text-[15px] font-semibold text-neutral-600 hover:text-neutral-950 rounded-xl hover:bg-neutral-100/50 transition-all duration-300 flex items-center gap-2"
                 >
                   {link.name}
-                  
+
                   {link.badge && (
                     <span className="text-[10px] bg-neutral-100 border border-neutral-200 text-neutral-600 px-2 py-0.5 rounded-md font-bold tracking-wide uppercase">
                       {link.badge}
@@ -68,33 +68,30 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* 3. Luxury Call-To-Actions */}
-            <div className="hidden lg:flex items-center gap-6">
-              {/* Added a subtle divider line to separate nav links from auth buttons */}
+            {/* 3. Luxury User Profile */}
+            <div className="hidden lg:flex items-center gap-5">
+              {/* Subtle divider line */}
               <div className="h-6 w-px bg-neutral-200"></div>
-              
-              <Link
-                href="/signin"
-                className="text-[15px] font-semibold text-neutral-600 hover:text-neutral-900 transition-colors"
-              >
-                Sign In
-              </Link>
-              
-              <Link
-                href="/signup"
-                // Changed back to "Sign Up", completely upgraded the button physics and added an icon
-                className="group relative inline-flex items-center justify-center gap-2 px-7 py-3 text-[15px] font-semibold text-white bg-neutral-950 rounded-full overflow-hidden transition-all duration-300 hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5 active:translate-y-0"
-              >
-                <span>Sign Up</span>
-                <svg 
-                  className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </Link>
+
+              {/* Premium Dummy User Badge */}
+              <div className="flex items-center gap-3 pl-1 cursor-pointer group">
+                <div className="flex flex-col text-right">
+                  <span className="text-[14px] font-bold text-neutral-900 group-hover:text-blue-600 transition-colors duration-200">
+                    Daniel Baah
+                  </span>
+                  <span className="text-[11px] font-bold tracking-wide uppercase text-neutral-400 mt-0.5">
+                    Premium Member
+                  </span>
+                </div>
+
+                {/* Microgradient Avatar Ring */}
+                <div className="relative p-[1.5px] rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 shadow-md shadow-blue-500/15 group-hover:scale-105 transition-transform duration-300">
+                  {/* UPDATED: Changed bg-white to bg-blue-600 and text-neutral-900 to text-white */}
+                  <div className="h-10 w-10 rounded-[10px] bg-blue-600 flex items-center justify-center font-black text-white text-sm shadow-inner">
+                    DB
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* 4. Mobile Menu Toggle */}
@@ -103,11 +100,26 @@ export default function Navbar() {
                 onClick={() => setIsOpen(!isOpen)}
                 className="text-neutral-600 hover:text-neutral-900 p-2 rounded-xl bg-neutral-50 border border-neutral-200/60"
               >
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
                   {isOpen ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
                   )}
                 </svg>
               </button>
@@ -126,24 +138,29 @@ export default function Navbar() {
                   className="flex items-center justify-between px-4 py-4 text-base font-semibold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-xl transition-colors"
                 >
                   <span>{link.name}</span>
-                  {link.badge && <span className="text-xs bg-neutral-100 border border-neutral-200 text-neutral-600 px-2.5 py-1 rounded-md font-bold">{link.badge}</span>}
+                  {link.badge && (
+                    <span className="text-xs bg-neutral-100 border border-neutral-200 text-neutral-600 px-2.5 py-1 rounded-md font-bold">
+                      {link.badge}
+                    </span>
+                  )}
                 </Link>
               ))}
             </div>
-            
-            <div className="mt-6 pt-6 border-t border-neutral-100 flex flex-col space-y-3">
-              <Link
-                href="/signin"
-                className="flex items-center justify-center w-full px-4 py-3.5 text-base font-semibold text-neutral-700 bg-neutral-50 rounded-xl border border-neutral-200/60 hover:bg-neutral-100 transition-colors"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/signup"
-                className="flex items-center justify-center w-full px-4 py-3.5 text-base font-semibold text-white bg-neutral-950 rounded-xl hover:bg-blue-600 transition-colors"
-              >
-                Sign Up
-              </Link>
+
+            {/* Mobile Profile Block */}
+            <div className="mt-6 pt-6 border-t border-neutral-100 flex items-center justify-between px-4 bg-neutral-50/50 p-4 rounded-xl border border-neutral-100">
+              <div className="flex flex-col">
+                <span className="text-base font-bold text-neutral-900">
+                  Daniel Baah
+                </span>
+                <span className="text-xs font-bold uppercase tracking-wider text-neutral-400 mt-0.5">
+                  Premium Member
+                </span>
+              </div>
+              {/* UPDATED: Replaced complex gradient with clean solid brand blue to align with desktop setup */}
+              <div className="h-11 w-11 rounded-xl bg-blue-600 flex items-center justify-center font-black text-white shadow-md">
+                DB
+              </div>
             </div>
           </div>
         )}
