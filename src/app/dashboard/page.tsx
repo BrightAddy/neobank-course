@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/home/Hero";
+import About from "@/components/home/About";
+import ForWho from "@/components/home/ForWho";
+import { supabase } from "@/lib/supabase";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -32,7 +35,7 @@ export default function DashboardPage() {
       const { data } = await supabase.auth.getSession();
 
       if (!data.session) {
-        router.replace("/login");
+        setIsCheckingAuth(false);
         return;
       }
 
@@ -47,7 +50,7 @@ export default function DashboardPage() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
-        router.replace("/login");
+        setIsCheckingAuth(false);
       }
     });
 

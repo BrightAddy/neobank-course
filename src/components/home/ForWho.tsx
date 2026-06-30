@@ -67,7 +67,7 @@ export default function ForWho() {
                       d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
-                  Building toys that don't look good on a resume.
+                  Building toys that don&apos;t look good on a resume.
                 </li>
                 <li className="flex items-start gap-3 text-sm text-gray-700">
                   <svg

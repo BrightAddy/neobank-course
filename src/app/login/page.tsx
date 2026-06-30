@@ -2,17 +2,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  type AuthProvider,
-  sendEmailOtp,
-  signInWithOAuthProvider,
-} from "@/lib/auth";
+import { type AuthProvider, signInWithOAuthProvider } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 
 export default function SignInPage() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [authError, setAuthError] = useState("");
-  const [authMessage, setAuthMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [socialProvider, setSocialProvider] = useState<AuthProvider | null>(
     null,
@@ -22,37 +19,13 @@ export default function SignInPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError("");
-    setAuthMessage("");
-
-    const trimmedEmail = email.trim().toLowerCase();
-    if (!trimmedEmail) {
-      setAuthError("Enter your email address to receive a login code.");
-      return;
-    }
 
     setIsLoading(true);
-    const { error } = await sendEmailOtp({
-      email: trimmedEmail,
-      shouldCreateUser: false,
-    });
-    setIsLoading(false);
-
-    if (error) {
-      setAuthError(error.message);
-      return;
-    }
-
-    window.sessionStorage.setItem("neobank-auth-email", trimmedEmail);
-    window.sessionStorage.setItem("neobank-auth-mode", "login");
-    setAuthMessage("Check your inbox for the 6-digit login code.");
-    router.push(
-      `/verify-otp?mode=login&email=${encodeURIComponent(trimmedEmail)}`,
-    );
+    router.replace("/dashboard");
   };
 
   const handleSocialLogin = async (provider: AuthProvider) => {
     setAuthError("");
-    setAuthMessage("");
     setSocialProvider(provider);
 
     const { error } = await signInWithOAuthProvider(provider);
@@ -62,6 +35,18 @@ export default function SignInPage() {
       setSocialProvider(null);
     }
   };
+
+  useEffect(() => {
+    const checkExistingSession = async () => {
+      const { data } = await supabase.auth.getSession();
+
+      if (data.session) {
+        router.replace("/dashboard");
+      }
+    };
+
+    checkExistingSession();
+  }, [router]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -291,7 +276,6 @@ export default function SignInPage() {
           </div>
 
           <form onSubmit={handleLogin} className="flex flex-col gap-5 md:gap-6">
-            {/* Email / Phone */}
             <div>
               <label className="mb-2 block text-[13px] md:text-[14px] font-bold text-[#1e293b]">
                 Email
@@ -306,27 +290,28 @@ export default function SignInPage() {
               />
             </div>
 
-            {/* Password */}
             <div>
               <label className="mb-2 block text-[13px] md:text-[14px] font-bold text-[#1e293b]">
                 Password
               </label>
               <input
                 type="password"
-                placeholder="Your Password"
+                placeholder="Your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
                 className="w-full rounded-[12px] border-[1.5px] border-[#e2e8f0] bg-white px-4 py-[13px] md:py-[15px] text-[15px] md:text-[16px] text-[#0f172a] placeholder-[#94a3b8] outline-none transition-all duration-200 focus:border-blue-500 focus:shadow-[0_0_0_4px_rgba(37,99,235,0.10)]"
               />
               <div className="mt-2 text-right">
-                <a
-                  href="#"
+                <Link
+                  href="/forget-otp"
                   className="text-[13px] md:text-[14px] font-bold text-blue-600 hover:text-blue-700 transition-colors"
                 >
                   Forgot?
-                </a>
+                </Link>
               </div>
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
               disabled={isLoading}
@@ -337,15 +322,21 @@ export default function SignInPage() {
                 cursor: isLoading ? "not-allowed" : "pointer",
                 opacity: isLoading ? 0.7 : 1,
               }}
-              className="mt-1 w-full rounded-[12px] px-4 py-[14px] md:py-[16px] text-[15px] md:text-[16px] font-bold shadow-[0_6px_20px_rgba(37,99,235,0.40)] transition-all duration-200 hover:shadow-[0_8px_28px_rgba(37,99,235,0.55)] active:scale-[0.98] flex items-center justify-center h-[52px] md:h-[56px]"
+              className="mt-1 flex h-[52px] w-full items-center justify-center rounded-[12px] px-4 py-[14px] text-[15px] font-bold shadow-[0_6px_20px_rgba(37,99,235,0.40)] transition-all duration-200 hover:shadow-[0_8px_28px_rgba(37,99,235,0.55)] active:scale-[0.98] md:h-[56px] md:py-[16px] md:text-[16px]"
             >
               {isLoading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
               ) : (
-                "Email me a login code"
+                "Log In"
               )}
             </button>
           </form>
+
+          {authError && (
+            <p className="mt-5 rounded-[12px] bg-red-50 px-4 py-3 text-[13px] font-semibold text-red-600">
+              {authError}
+            </p>
+          )}
 
           <div className="my-7 flex items-center gap-3">
             <div className="h-px flex-1 bg-[#e2e8f0]" />
