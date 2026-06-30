@@ -1,12 +1,21 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { sendEmailOtp, verifyEmailOtp } from "@/lib/auth";
+
+type AuthMode = "signup" | "login";
 
 export default function VerifyOTPPage() {
   const router = useRouter();
 
   // State to hold the 6 digits
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
+  const [email, setEmail] = useState("");
+  const [mode, setMode] = useState<AuthMode>("signup");
+  const [authError, setAuthError] = useState("");
+  const [authMessage, setAuthMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isResending, setIsResending] = useState(false);
 
   // Refs to control focus shifting between boxes
   const inputRefs = useRef<HTMLInputElement[]>([]);
@@ -16,6 +25,21 @@ export default function VerifyOTPPage() {
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus();
     }
+
+    const timer = window.setTimeout(() => {
+      const searchParams = new URLSearchParams(window.location.search);
+      const queryEmail = searchParams.get("email");
+      const queryMode = searchParams.get("mode");
+      const storedEmail = window.sessionStorage.getItem("neobank-auth-email");
+      const storedMode = window.sessionStorage.getItem("neobank-auth-mode");
+
+      setEmail(queryEmail || storedEmail || "");
+      if (queryMode === "login" || storedMode === "login") {
+        setMode("login");
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   const handleChange = (element: HTMLInputElement, index: number) => {
@@ -48,16 +72,59 @@ export default function VerifyOTPPage() {
     }
   };
 
-  const handleConfirm = (e: React.FormEvent) => {
+  const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAuthError("");
+    setAuthMessage("");
 
     // Combine the 6 digits into a single string
     const finalOtp = otp.join("");
 
-    if (finalOtp.length === 6) {
-      // Pure frontend routing directly to the login page
-      router.push("/login");
+    if (!email) {
+      setAuthError("Your email is missing. Go back and request a new code.");
+      return;
     }
+
+    if (finalOtp.length !== 6) return;
+
+    setIsSubmitting(true);
+    const { error } = await verifyEmailOtp(email, finalOtp);
+    setIsSubmitting(false);
+
+    if (error) {
+      setAuthError(
+        "That code is not valid. Use the 6-digit code from the latest Supabase email, or click Resend Code to generate a new one.",
+      );
+      return;
+    }
+
+    window.sessionStorage.removeItem("neobank-auth-email");
+    window.sessionStorage.removeItem("neobank-auth-mode");
+    router.replace("/dashboard");
+  };
+
+  const handleResend = async () => {
+    setAuthError("");
+    setAuthMessage("");
+
+    if (!email) {
+      setAuthError("Your email is missing. Go back and request a new code.");
+      return;
+    }
+
+    setIsResending(true);
+    const { error } = await sendEmailOtp({
+      email,
+      shouldCreateUser: mode === "signup",
+    });
+    setIsResending(false);
+
+    if (error) {
+      setAuthError(error.message);
+      return;
+    }
+
+    setAuthMessage("We sent a fresh code to your email.");
   };
 
   return (
@@ -72,10 +139,23 @@ export default function VerifyOTPPage() {
             Verify Secure Account
           </h1>
           <p className="text-sm text-slate-500">
-            We sent a 6-digit confirmation code to your email. Enter it below to
+            We sent a 6-digit confirmation code
+            {email ? ` to ${email}` : " to your email"}. Enter it below to
             activate your access.
           </p>
         </div>
+
+        {(authError || authMessage) && (
+          <p
+            className={`mb-6 rounded-xl px-4 py-3 text-sm font-semibold ${
+              authError
+                ? "bg-red-50 text-red-600"
+                : "bg-emerald-50 text-emerald-700"
+            }`}
+          >
+            {authError || authMessage}
+          </p>
+        )}
 
         {/* OTP Input Grid Form */}
         <form onSubmit={handleConfirm} className="space-y-8">
@@ -100,10 +180,10 @@ export default function VerifyOTPPage() {
           {/* Confirm Button */}
           <button
             type="submit"
-            disabled={otp.some((digit) => digit === "")}
+            disabled={otp.some((digit) => digit === "") || isSubmitting}
             className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-xl hover:shadow-blue-600/20 hover:-translate-y-0.5 disabled:opacity-40 disabled:pointer-events-none disabled:transform-none"
           >
-            Confirm & Activate
+            {isSubmitting ? "Verifying..." : "Confirm & Activate"}
           </button>
         </form>
 
@@ -112,9 +192,11 @@ export default function VerifyOTPPage() {
           Didn&apos;t get a code?{" "}
           <button
             type="button"
+            onClick={handleResend}
+            disabled={isResending}
             className="text-blue-600 font-semibold hover:underline"
           >
-            Resend Code
+            {isResending ? "Sending..." : "Resend Code"}
           </button>
         </p>
       </div>
