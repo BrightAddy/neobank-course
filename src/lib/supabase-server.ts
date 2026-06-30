@@ -9,4 +9,9 @@ if (!supabaseUrl || !supabaseSecretKey) {
   );
 }
 
-export const supabaseAdmin = createClient(supabaseUrl, supabaseSecretKey);
+export const supabaseAdmin = createClient(supabaseUrl, supabaseSecretKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+  },
+});
