@@ -55,16 +55,15 @@ export default function VerifyOTPPage() {
     const finalOtp = otp.join("");
 
     if (finalOtp.length === 6) {
-      // Pure frontend routing directly to the login page
-      router.push("/login");
+      // Pure frontend routing directly to the new password page
+      router.push("/new-password");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 relative overflow-hidden">
-      
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/[0.06] rounded-full blur-[100px] pointer-events-none"></div>
- 
+
       <div className="relative z-10 max-w-md w-full bg-white border border-slate-200 p-8 sm:p-10 rounded-3xl shadow-xl shadow-slate-200/60">
         {/* Headings */}
         <div className="text-center mb-8">
@@ -96,8 +95,6 @@ export default function VerifyOTPPage() {
               />
             ))}
           </div>
-
-          {/* Confirm Button */}
           <button
             type="submit"
             disabled={otp.some((digit) => digit === "")}

@@ -270,7 +270,7 @@ export default function SignInPage() {
               />
               <div className="mt-2 text-right">
                 <a
-                  href="#"
+                  href="/forget-otp"
                   className="text-[13px] md:text-[14px] font-bold text-blue-600 hover:text-blue-700 transition-colors"
                 >
                   Forgot?
