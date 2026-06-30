@@ -10,8 +10,8 @@ export default function SignUpPage() {
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault(); // Stops the page from reloading
-    // Backend logic will go here later. For now, route to login:
-    router.push("/login");
+    // Backend logic will go here later. For now, route to verify-otp:
+    router.push("/verify-otp");
   };
 
   useEffect(() => {
