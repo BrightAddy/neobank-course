@@ -1,5 +1,4 @@
 "use client";
-
 import Image from "next/image";
 
 export default function ForWho() {
@@ -9,49 +8,47 @@ export default function ForWho() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-200/40 blur-[120px] rounded-full pointer-events-none"></div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Header Section */}
+        {/* Header */}
         <div className="mx-auto max-w-2xl text-center mb-16 sm:mb-20">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-blue-600">
             <span className="flex h-2 w-2 rounded-full bg-blue-500"></span>
             Who is this for?
           </div>
           <h2 className="text-3xl font-black tracking-tight text-gray-900 sm:text-5xl mb-6">
-            Designed for developers ready to{" "}
-            <span className="text-blue-600">level up.</span>
+            Built for engineers who are{" "}
+            <span className="text-blue-600">ready for the real thing.</span>
           </h2>
           <p className="text-lg leading-relaxed text-gray-600">
-            If you are tired of building the same basic to-do lists and want to
-            understand how real tech companies architect scalable systems, you
-            are in the right place.
+            You already know TypeScript, React, and the basics of mobile
+            development. This course is for what comes next — regulated apps,
+            real money, and the security decisions that come with both.
           </p>
         </div>
 
         {/* Two-Column Persona Layout */}
         <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 lg:grid-cols-2">
-          {/* Card 1: The Frustrated Developer */}
+          {/* Card 1: The developer who knows React but has never shipped fintech */}
           <div className="group relative flex flex-col overflow-hidden rounded-[32px] border border-gray-200 bg-white shadow-xl shadow-gray-200/50 transition-all hover:border-blue-300 hover:shadow-2xl hover:shadow-blue-100/50">
-            {/* Image Container with Dark Overlay */}
             <div className="relative h-[240px] w-full overflow-hidden bg-slate-950">
               <Image
-                src="/assets/home/frus1.jpg"
-                alt="Frustrated developer looking at code"
+                src="/assets/home/frus3.jpg"
+                alt="Developer stuck on CRUD apps"
                 fill
                 className="object-cover opacity-85 transition-all duration-500 group-hover:scale-105"
               />
-              {/* Premium dark gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/40 to-transparent"></div>
             </div>
 
             <div className="flex flex-col p-8 sm:p-10 -mt-10 relative z-10 rounded-t-[24px] bg-white">
               <h3 className="mb-3 text-2xl font-bold text-gray-900">
-                Stuck in Tutorial Hell?
+                You can build apps. Not systems.
               </h3>
               <p className="mb-6 text-gray-600 text-sm leading-relaxed">
-                You know React, you know how to set up a basic database, but you
-                feel lost when it comes to connecting everything securely and
-                deploying a robust architecture.
+                You are comfortable with React and TypeScript, but every
+                production codebase you encounter has layers — security, state
+                encryption, session management, BFF patterns — that no tutorial
+                ever covered.
               </p>
-
               <ul className="flex flex-col gap-3 mt-auto">
                 <li className="flex items-start gap-3 text-sm text-gray-700">
                   <svg
@@ -67,7 +64,8 @@ export default function ForWho() {
                       d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
-                  Building toys that don&apos;t look good on a resume.
+                  You have never touched biometric auth, encrypted state, or
+                  secure storage in a real app.
                 </li>
                 <li className="flex items-start gap-3 text-sm text-gray-700">
                   <svg
@@ -83,7 +81,8 @@ export default function ForWho() {
                       d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
-                  Confused by advanced state management.
+                  You don&apos;t know how to keep API credentials off the client in a
+                  mobile app.
                 </li>
                 <li className="flex items-start gap-3 text-sm text-gray-700">
                   <svg
@@ -99,36 +98,35 @@ export default function ForWho() {
                       d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
-                  Unsure how real auth flows work in production.
+                  Your portfolio has nothing that signals you can work in a
+                  regulated, money-moving environment.
                 </li>
               </ul>
             </div>
           </div>
 
-          {/* Card 2: The Ambitious Engineer */}
+          {/* Card 2: The engineer evaluating fintech/neobank architecture */}
           <div className="group relative flex flex-col overflow-hidden rounded-[32px] border border-blue-100 bg-white shadow-xl shadow-gray-200/50 transition-all hover:border-blue-400 hover:shadow-2xl hover:shadow-blue-200/50">
-            {/* Image Container with Dark Overlay */}
             <div className="relative h-[240px] w-full overflow-hidden bg-slate-950">
               <Image
                 src="/assets/home/happ2.jpg"
-                alt="Developer successfully shipping code"
+                alt="Engineer shipping production fintech"
                 fill
                 className="object-cover opacity-85 transition-all duration-500 group-hover:scale-105"
               />
-              {/* Premium dark gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/40 to-transparent"></div>
             </div>
 
             <div className="flex flex-col p-8 sm:p-10 -mt-10 relative z-10 rounded-t-[24px] bg-white">
               <h3 className="mb-3 text-2xl font-bold text-gray-900">
-                Ready for Production.
+                You are ready to go deeper.
               </h3>
               <p className="mb-6 text-gray-600 text-sm leading-relaxed">
-                You are ready to bridge the gap between junior and mid/senior
-                level. You want to learn the best practices that tech leads
-                expect when you join a serious engineering team.
+                Whether you are a tech lead evaluating architecture for a wallet
+                or neobank, or a security-curious engineer who wants hands-on
+                experience with mobile threat modelling — this is where you get
+                it.
               </p>
-
               <ul className="flex flex-col gap-3 mt-auto">
                 <li className="flex items-start gap-3 text-sm text-gray-700">
                   <svg
@@ -144,7 +142,8 @@ export default function ForWho() {
                       d="M5 13l4 4L19 7"
                     />
                   </svg>
-                  Master complex microservices and BFF patterns.
+                  Implement App Attest, Play Integrity, OWASP MASVS, and real
+                  session lifecycle management.
                 </li>
                 <li className="flex items-start gap-3 text-sm text-gray-700">
                   <svg
@@ -160,7 +159,9 @@ export default function ForWho() {
                       d="M5 13l4 4L19 7"
                     />
                   </svg>
-                  Implement financial-grade security and encryption.
+                  Design a BFF that signs requests, enforces rate limits, and
+                  writes audit logs — never exposing bank credentials to the
+                  client.
                 </li>
                 <li className="flex items-start gap-3 text-sm text-gray-700">
                   <svg
@@ -176,7 +177,8 @@ export default function ForWho() {
                       d="M5 13l4 4L19 7"
                     />
                   </svg>
-                  Build a portfolio piece that demands attention.
+                  Graduate with a public monorepo, a threat-model doc, and a
+                  video walkthrough — a portfolio piece that speaks for itself.
                 </li>
               </ul>
             </div>

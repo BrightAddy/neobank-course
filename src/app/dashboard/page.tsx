@@ -1,12 +1,10 @@
+// src/app/dashboard/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from "@/components/layout/Navbar";
-import Hero from "@/components/home/Hero";
-import About from "@/components/home/About";
-import ForWho from "@/components/home/ForWho";
 import { supabase } from "@/lib/supabase";
+import Navbar from "@/components/layout/Navbar"; // Or a specific dashboard sidebar/nav
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -23,11 +21,9 @@ export default function DashboardPage() {
         const { error } = await supabase.auth.exchangeCodeForSession(code);
         window.history.replaceState(null, "", window.location.pathname);
 
-        if (error) {
-          if (isMounted) {
-            setAuthError(error.message);
-            setIsCheckingAuth(false);
-          }
+        if (error && isMounted) {
+          setAuthError(error.message);
+          setIsCheckingAuth(false);
           return;
         }
       }
@@ -35,7 +31,7 @@ export default function DashboardPage() {
       const { data } = await supabase.auth.getSession();
 
       if (!data.session) {
-        router.replace("/login");
+        setIsCheckingAuth(false);
         return;
       }
 
@@ -46,9 +42,7 @@ export default function DashboardPage() {
 
     checkSession();
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
         router.replace("/login");
       }
@@ -71,10 +65,8 @@ export default function DashboardPage() {
   if (authError) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-        <div className="max-w-md rounded-2xl border border-red-100 bg-white p-6 text-center shadow-xl shadow-slate-200/60">
-          <h1 className="text-xl font-black text-slate-900">
-            Authentication failed
-          </h1>
+        <div className="max-w-md rounded-2xl border border-red-100 bg-white p-6 text-center shadow-xl">
+          <h1 className="text-xl font-black text-slate-900">Authentication failed</h1>
           <p className="mt-3 text-sm text-red-600">{authError}</p>
           <button
             type="button"
@@ -89,11 +81,13 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen relative overflow-hidden bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-blue-100 via-white to-white">
+    <main className="min-h-screen p-8 bg-slate-50">
       <Navbar />
-      <Hero />
-      <About />
-      <ForWho />
+      <div className="max-w-7xl mx-auto pt-24">
+        <h1 className="text-3xl font-black text-slate-900">Welcome to your Dashboard!</h1>
+        <p className="text-slate-600 mt-2">This space is now fully secure and private.</p>
+        {/* Render your course modules, video player, or user progress tracking here */}
+      </div>
     </main>
   );
 }

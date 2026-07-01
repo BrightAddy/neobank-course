@@ -23,7 +23,7 @@ export default function Hero() {
       `}</style>
 
       {/* BACKGROUND IMAGE LAYER with Ken Burns Effect */}
-      <div className="absolute inset-0 bg-[url('/assets/home/hero.jpg')] bg-cover bg-center bg-no-repeat animate-[kenburns_25s_ease-in-out_infinite]" />
+      <div className="absolute inset-0 bg-[url('/assets/home/hero1.jpg')] bg-cover bg-center bg-no-repeat animate-[kenburns_25s_ease-in-out_infinite]" />
 
       {/* BALANCED DARK OVERLAY: Reduced opacity slightly so the image shines through nicely */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/65 backdrop-blur-[1px]"></div>
