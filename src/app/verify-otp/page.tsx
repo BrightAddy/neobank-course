@@ -1,15 +1,21 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { sendEmailOtp, verifyEmailOtp } from "@/lib/auth";
+import {
+  getAuthErrorMessage,
+  resendSignupConfirmation,
+  sendEmailOtp,
+  verifyEmailOtp,
+} from "@/lib/auth";
 
 type AuthMode = "signup" | "login";
+const OTP_LENGTH = 8;
 
 export default function VerifyOTPPage() {
   const router = useRouter();
 
-  // State to hold the 6 digits
-  const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
+  // State to hold the OTP digits
+  const [otp, setOtp] = useState<string[]>(new Array(OTP_LENGTH).fill(""));
   const [email, setEmail] = useState("");
   const [mode, setMode] = useState<AuthMode>("signup");
   const [authError, setAuthError] = useState("");
@@ -52,7 +58,7 @@ export default function VerifyOTPPage() {
     setOtp(newOtp);
 
     // Automatically shift focus to the next box if value is entered
-    if (value && index < 5 && inputRefs.current[index + 1]) {
+    if (value && index < OTP_LENGTH - 1 && inputRefs.current[index + 1]) {
       inputRefs.current[index + 1].focus();
     }
   };
@@ -85,15 +91,19 @@ export default function VerifyOTPPage() {
       return;
     }
 
-    if (finalOtp.length !== 6) return;
+    if (finalOtp.length !== OTP_LENGTH) return;
 
     setIsSubmitting(true);
-    const { error } = await verifyEmailOtp(email, finalOtp);
+    const { error } = await verifyEmailOtp(
+      email,
+      finalOtp,
+      mode === "signup" ? "signup" : "email",
+    );
     setIsSubmitting(false);
 
     if (error) {
       setAuthError(
-        "That code is not valid. Use the 6-digit code from the latest Supabase email, or click Resend Code to generate a new one.",
+        "That code is not valid. Use the latest code from your Supabase email, or click Resend Code to generate a new one.",
       );
       return;
     }
@@ -113,14 +123,17 @@ export default function VerifyOTPPage() {
     }
 
     setIsResending(true);
-    const { error } = await sendEmailOtp({
-      email,
-      shouldCreateUser: mode === "signup",
-    });
+    const { error } =
+      mode === "signup"
+        ? await resendSignupConfirmation(email)
+        : await sendEmailOtp({
+            email,
+            shouldCreateUser: false,
+          });
     setIsResending(false);
 
     if (error) {
-      setAuthError(error.message);
+      setAuthError(getAuthErrorMessage(error));
       return;
     }
 
@@ -139,7 +152,7 @@ export default function VerifyOTPPage() {
             Verify Secure Account
           </h1>
           <p className="text-sm text-slate-500">
-            We sent a 6-digit confirmation code
+            We sent an {OTP_LENGTH}-digit confirmation code
             {email ? ` to ${email}` : " to your email"}. Enter it below to
             activate your access.
           </p>
@@ -159,7 +172,7 @@ export default function VerifyOTPPage() {
 
         {/* OTP Input Grid Form */}
         <form onSubmit={handleConfirm} className="space-y-8">
-          <div className="grid grid-cols-6 gap-2 sm:gap-3">
+          <div className="grid grid-cols-8 gap-2 sm:gap-3">
             {otp.map((digit, index) => (
               <input
                 key={index}

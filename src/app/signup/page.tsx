@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   type AuthProvider,
-  sendEmailOtp,
+  getAuthErrorMessage,
+  signUpWithEmailPassword,
   signInWithOAuthProvider,
 } from "@/lib/auth";
 
@@ -15,6 +16,8 @@ export default function SignUpPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState("");
   const [authMessage, setAuthMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,10 +36,15 @@ export default function SignUpPage() {
       return;
     }
 
+    if (password.length < 6) {
+      setAuthError("Create a password with at least 6 characters.");
+      return;
+    }
+
     setIsSubmitting(true);
-    const { error } = await sendEmailOtp({
+    const { error } = await signUpWithEmailPassword({
       email: trimmedEmail,
-      shouldCreateUser: true,
+      password,
       data: {
         full_name: fullName.trim() || undefined,
         phone: phone.trim() || undefined,
@@ -45,13 +53,13 @@ export default function SignUpPage() {
     setIsSubmitting(false);
 
     if (error) {
-      setAuthError(error.message);
+      setAuthError(getAuthErrorMessage(error));
       return;
     }
 
     window.sessionStorage.setItem("neobank-auth-email", trimmedEmail);
     window.sessionStorage.setItem("neobank-auth-mode", "signup");
-    setAuthMessage("Check your inbox for the 6-digit Supabase code.");
+    setAuthMessage("Check your inbox for the 6-digit Supabase signup code.");
     router.push(
       `/verify-otp?mode=signup&email=${encodeURIComponent(trimmedEmail)}`,
     );
@@ -65,7 +73,7 @@ export default function SignUpPage() {
     const { error } = await signInWithOAuthProvider(provider);
 
     if (error) {
-      setAuthError(error.message);
+      setAuthError(getAuthErrorMessage(error));
       setSocialProvider(null);
     }
   };
@@ -606,14 +614,61 @@ export default function SignUpPage() {
               />
 
               <label className="mb-[8px] block text-[13px] font-bold text-[#1e293b]">
-                Verification
+                Password
               </label>
+              <div className="relative mb-[24px]">
               <input
-                className="mb-[24px] w-full rounded-[12px] border-[1.5px] border-[#e2e8f0] bg-white px-[16px] py-[14px] text-[15px] text-[#0f172a] outline-none transition-colors focus:border-[#2563eb] focus:shadow-[0_0_0_4px_rgba(37,99,235,0.08)]"
-                type="hidden"
+                className="w-full rounded-[12px] border-[1.5px] border-[#e2e8f0] bg-white px-[16px] py-[14px] pr-[52px] text-[15px] text-[#0f172a] outline-none transition-colors focus:border-[#2563eb] focus:shadow-[0_0_0_4px_rgba(37,99,235,0.08)]"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                minLength={6}
+                required
                 placeholder="••••••••"
               />
+                <button
+                  type="button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  onClick={() => setShowPassword((value) => !value)}
+                  className="absolute right-[14px] top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-[8px] text-[#64748b] transition-colors hover:bg-[#eff6ff] hover:text-[#2563eb]"
+                >
+                  {showPassword ? (
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C7 20 2.73 16.89 1 12a11.2 11.2 0 0 1 5.06-5.94" />
+                      <path d="M9.9 4.24A11.4 11.4 0 0 1 12 4c5 0 9.27 3.11 11 8a11.4 11.4 0 0 1-2.3 3.54" />
+                      <path d="M14.12 14.12a3 3 0 0 1-4.24-4.24" />
+                      <path d="M1 1l22 22" />
+                    </svg>
+                  ) : (
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  )}
+                </button>
+              </div>
 
+              <label className="mb-[8px] block text-[13px] font-bold text-[#1e293b]">
+                Verification
+              </label>
               <p className="mb-[24px] rounded-[12px] border border-[#dbeafe] bg-[#eff6ff] px-[16px] py-[13px] text-[13px] font-medium leading-6 text-[#1d4ed8]">
                 Supabase will email a 6-digit code. You will enter it on the
                 next screen to activate your account.

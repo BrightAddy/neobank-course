@@ -1,10 +1,72 @@
 "use client";
  
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
  
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [displayName, setDisplayName] = useState("NeoBank User");
+  const [displayEmail, setDisplayEmail] = useState("");
+
+  const initials = useMemo(() => {
+    const source = displayName || displayEmail || "NeoBank User";
+    const parts = source
+      .replace(/@.*/, "")
+      .split(/[\s._-]+/)
+      .filter(Boolean);
+
+    return (
+      parts
+        .slice(0, 2)
+        .map((part) => part[0])
+        .join("")
+        .toUpperCase() || "NU"
+    );
+  }, [displayEmail, displayName]);
+
+  useEffect(() => {
+    const applyStoredUser = () => {
+      const storedName = window.sessionStorage.getItem("neobank-display-name");
+      const storedEmail = window.sessionStorage.getItem("neobank-display-email");
+
+      if (storedEmail) {
+        setDisplayEmail(storedEmail);
+      }
+
+      if (storedName) {
+        setDisplayName(storedName);
+      } else if (storedEmail) {
+        setDisplayName(storedEmail.split("@")[0]);
+      }
+    };
+
+    const applySupabaseUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      const user = data.user;
+
+      if (!user) {
+        applyStoredUser();
+        return;
+      }
+
+      const name =
+        user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        user.email?.split("@")[0] ||
+        "NeoBank User";
+
+      setDisplayName(name);
+      setDisplayEmail(user.email || "");
+      window.sessionStorage.setItem("neobank-display-name", name);
+      if (user.email) {
+        window.sessionStorage.setItem("neobank-display-email", user.email);
+      }
+    };
+
+    applyStoredUser();
+    applySupabaseUser();
+  }, []);
  
   const navLinks = [
     { name: "Home", href: "components/home" },
@@ -77,7 +139,7 @@ export default function Navbar() {
 <div className="flex items-center gap-3 pl-1 cursor-pointer group">
 <div className="flex flex-col text-right">
 <span className="text-[14px] font-bold text-neutral-900 group-hover:text-blue-600 transition-colors duration-200">
-                    Daniel Baah
+                    {displayName}
 </span>
 <span className="text-[11px] font-bold tracking-wide uppercase text-neutral-400 mt-0.5">
                     Premium Member
@@ -88,7 +150,7 @@ export default function Navbar() {
 <div className="relative p-[1.5px] rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 shadow-md shadow-blue-500/15 group-hover:scale-105 transition-transform duration-300">
                   {/* UPDATED: Changed bg-white to bg-blue-600 and text-neutral-900 to text-white */}
 <div className="h-10 w-10 rounded-[10px] bg-blue-600 flex items-center justify-center font-black text-white text-sm shadow-inner">
-                    DB
+                    {initials}
 </div>
 </div>
 </div>
@@ -151,7 +213,7 @@ export default function Navbar() {
 <div className="mt-6 pt-6 border-t border-neutral-100 flex items-center justify-between px-4 bg-neutral-50/50 p-4 rounded-xl border border-neutral-100">
 <div className="flex flex-col">
 <span className="text-base font-bold text-neutral-900">
-                  Daniel Baah
+                  {displayName}
 </span>
 <span className="text-xs font-bold uppercase tracking-wider text-neutral-400 mt-0.5">
                   Premium Member
@@ -159,7 +221,7 @@ export default function Navbar() {
 </div>
               {/* UPDATED: Replaced complex gradient with clean solid brand blue to align with desktop setup */}
 <div className="h-11 w-11 rounded-xl bg-blue-600 flex items-center justify-center font-black text-white shadow-md">
-                DB
+                {initials}
 </div>
 </div>
 </div>

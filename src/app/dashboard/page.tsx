@@ -35,7 +35,7 @@ export default function DashboardPage() {
       const { data } = await supabase.auth.getSession();
 
       if (!data.session) {
-        setIsCheckingAuth(false);
+        router.replace("/login");
         return;
       }
 
@@ -50,7 +50,7 @@ export default function DashboardPage() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
-        setIsCheckingAuth(false);
+        router.replace("/login");
       }
     });
 

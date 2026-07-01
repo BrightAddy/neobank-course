@@ -2,7 +2,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { type AuthProvider, signInWithOAuthProvider } from "@/lib/auth";
+import {
+  type AuthProvider,
+  getAuthErrorMessage,
+  signInWithEmailPassword,
+  signInWithOAuthProvider,
+} from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
 export default function SignInPage() {
@@ -21,6 +26,34 @@ export default function SignInPage() {
     setAuthError("");
 
     setIsLoading(true);
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (!trimmedEmail || !password) {
+      setAuthError("Enter your email and password to log in.");
+      setIsLoading(false);
+      return;
+    }
+
+    const { data, error } = await signInWithEmailPassword({
+      email: trimmedEmail,
+      password,
+    });
+    setIsLoading(false);
+
+    if (error) {
+      setAuthError(getAuthErrorMessage(error));
+      return;
+    }
+
+    const name =
+      data.user?.user_metadata?.full_name ||
+      data.user?.user_metadata?.name ||
+      data.user?.email?.split("@")[0] ||
+      trimmedEmail.split("@")[0] ||
+      "NeoBank User";
+
+    window.sessionStorage.setItem("neobank-display-name", name);
+    window.sessionStorage.setItem("neobank-display-email", trimmedEmail);
     router.replace("/dashboard");
   };
 
@@ -31,7 +64,7 @@ export default function SignInPage() {
     const { error } = await signInWithOAuthProvider(provider);
 
     if (error) {
-      setAuthError(error.message);
+      setAuthError(getAuthErrorMessage(error));
       setSocialProvider(null);
     }
   };
