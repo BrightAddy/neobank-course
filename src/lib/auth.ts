@@ -14,6 +14,11 @@ type EmailOtpOptions = {
   };
 };
 
+type PasswordLoginOptions = {
+  email: string;
+  password: string;
+};
+
 function getRedirectUrl(path: string) {
   if (typeof window === "undefined") {
     return path;
@@ -81,6 +86,16 @@ export async function verifyEmailOtp(email: string, token: string) {
     email,
     token,
     type: "email",
+  });
+}
+
+export async function signInWithEmailPassword({
+  email,
+  password,
+}: PasswordLoginOptions) {
+  return supabase.auth.signInWithPassword({
+    email,
+    password,
   });
 }
 
